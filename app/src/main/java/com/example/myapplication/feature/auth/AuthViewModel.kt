@@ -1,20 +1,18 @@
-package com.example.myapplication.presentation.views.auth
+package com.example.myapplication.feature.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.Constants
-import com.example.myapplication.data.UserCredentialsDto
-import com.example.myapplication.presentation.views.auth.states.AuthFormState
-import com.example.myapplication.presentation.views.auth.states.FormState
+import com.example.myapplication.data.dto.UserCredentialsDto
+import com.example.myapplication.feature.auth.states.AuthFormState
+import com.example.myapplication.feature.auth.states.FormState
 import com.example.myapplication.utils.AuthValidator
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-@HiltViewModel
 class AuthViewModel : ViewModel() {
     private val _authFormState = MutableStateFlow(AuthFormState())
     val authFormState = _authFormState.asStateFlow()

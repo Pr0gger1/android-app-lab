@@ -1,8 +1,8 @@
-package com.example.myapplication.presentation.views.auth
+package com.example.myapplication.feature.auth.presentation
 
 import android.content.Intent
 import android.widget.Toast
-import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ButtonDefaults
@@ -26,6 +27,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -33,10 +35,11 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
-import com.example.myapplication.presentation.activities.AuthenticatedActivity
-import com.example.myapplication.presentation.shared.CircleLoader
-import com.example.myapplication.presentation.views.auth.states.AuthFormState
-import com.example.myapplication.presentation.views.auth.states.FormState
+import com.example.myapplication.core.shared.CircleLoader
+import com.example.myapplication.feature.auth.AuthViewModel
+import com.example.myapplication.feature.auth.states.AuthFormState
+import com.example.myapplication.feature.auth.states.FormState
+import com.example.myapplication.feature.home.MainActivity
 import com.example.myapplication.utils.AuthValidator
 
 @Composable
@@ -51,7 +54,7 @@ fun AuthView(authViewModel: AuthViewModel, padding: PaddingValues) {
             }
 
             FormState.SUCCESS -> {
-                val intent = Intent(context, AuthenticatedActivity::class.java)
+                val intent = Intent(context, MainActivity::class.java)
                 context.startActivity(intent)
                 authViewModel.setFormState(FormState.INITIAL)
             }
@@ -65,22 +68,26 @@ fun AuthView(authViewModel: AuthViewModel, padding: PaddingValues) {
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = "Logo", fontSize = 64.sp)
+            Image(
+                painter = painterResource(R.drawable.bird_logo),
+                contentDescription = "logo",
+                modifier = Modifier
+                    .width(100.dp)
+                    .height(100.dp)
+            )
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .animateContentSize()
                     .padding(start = 30.dp, end = 30.dp, bottom = 20.dp),
                 verticalArrangement = Arrangement.Center
             ) {
-
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
                     value = authFormState.email,
                     singleLine = true,
                     onValueChange = authViewModel::setEmail,
                     label = { Text(stringResource(id = R.string.email_label)) },
-                    isError = !authFormState.isEmailValid,
+                    isError = !authFormState.isEmailValid || authFormState.state == FormState.ERROR,
                     supportingText = {
                         if (!authFormState.isEmailValid)
                             Text(
@@ -98,7 +105,7 @@ fun AuthView(authViewModel: AuthViewModel, padding: PaddingValues) {
                     singleLine = true,
                     onValueChange = authViewModel::setPassword,
                     label = { Text(stringResource(id = R.string.password_label)) },
-                    isError = !authFormState.isPasswordValid,
+                    isError = !authFormState.isPasswordValid || authFormState.state == FormState.ERROR,
                     visualTransformation = PasswordVisualTransformation(),
                     placeholder = { Text(stringResource(R.string.password_placeholder)) },
                     supportingText = { ErrorPasswordFieldMessage(authFormState) }

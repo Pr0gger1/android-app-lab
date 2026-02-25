@@ -1,6 +1,6 @@
-package com.example.myapplication.presentation.views.auth.states
+package com.example.myapplication.feature.auth.states
 
-import com.example.myapplication.data.UserCredentials
+import com.example.myapplication.data.dto.UserCredentials
 
 enum class FormState {
     INITIAL,

@@ -1,6 +1,6 @@
 package com.example.myapplication
 
-import com.example.myapplication.data.UserCredentialsDto
+import com.example.myapplication.data.dto.UserCredentialsDto
 
 object Constants {
     val USER_CREDENTIALS = listOf(

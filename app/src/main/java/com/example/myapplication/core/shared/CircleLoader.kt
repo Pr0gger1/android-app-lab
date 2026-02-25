@@ -1,4 +1,4 @@
-package com.example.myapplication.presentation.shared
+package com.example.myapplication.core.shared
 
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme

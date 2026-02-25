@@ -1,4 +1,4 @@
-package com.example.myapplication.presentation.views.main_page
+package com.example.myapplication.feature.home.presentation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

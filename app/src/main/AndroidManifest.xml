@@ -11,12 +11,12 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.MyApplication">
         <activity
-                android:name=".presentation.activities.AuthenticatedActivity"
+                android:name=".feature.home.MainActivity"
                 android:exported="false"
                 android:label="@string/title_activity_authenticated_activity"
                 android:theme="@style/Theme.MyApplication" />
         <activity
-                android:name=".presentation.activities.MainActivity"
+                android:name=".feature.auth.AuthActivity"
                 android:exported="true"
                 android:label="@string/app_name"
                 android:theme="@style/Theme.MyApplication">

@@ -1,9 +1,8 @@
 package com.example.myapplication.utils
 
-import com.example.myapplication.presentation.views.auth.states.AuthFormState
+import com.example.myapplication.feature.auth.states.AuthFormState
 
 sealed class AuthValidator {
-
     companion object {
         const val EMAIL_REGEX: String = "^[A-Za-z](.*)(@)(.+)(\\.)(.+)"
         const val PASSWORD_MIN_LENGTH = 8
@@ -12,11 +11,6 @@ sealed class AuthValidator {
             val mask: String = EMAIL_REGEX
             if (text.isEmpty()) return true
             return text.matches(mask.toRegex())
-        }
-
-        fun arePasswordsEqual(password: String, repeatedPassword: String): Boolean {
-            if (password.isEmpty() && repeatedPassword.isEmpty()) return true
-            return password == repeatedPassword
         }
 
         fun validatePassword(password: String): Boolean {
