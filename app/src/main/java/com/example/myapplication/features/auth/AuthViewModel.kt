@@ -1,11 +1,11 @@
-package com.example.myapplication.feature.auth
+package com.example.myapplication.features.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.Constants
 import com.example.myapplication.data.dto.UserCredentialsDto
-import com.example.myapplication.feature.auth.states.AuthFormState
-import com.example.myapplication.feature.auth.states.FormState
+import com.example.myapplication.features.auth.states.AuthFormState
+import com.example.myapplication.features.auth.states.FormState
 import com.example.myapplication.utils.AuthValidator
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow

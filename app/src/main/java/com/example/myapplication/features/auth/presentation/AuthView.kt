@@ -1,4 +1,4 @@
-package com.example.myapplication.feature.auth.presentation
+package com.example.myapplication.features.auth.presentation
 
 import android.content.Intent
 import android.widget.Toast
@@ -36,10 +36,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
 import com.example.myapplication.core.shared.CircleLoader
-import com.example.myapplication.feature.auth.AuthViewModel
-import com.example.myapplication.feature.auth.states.AuthFormState
-import com.example.myapplication.feature.auth.states.FormState
-import com.example.myapplication.feature.home.MainActivity
+import com.example.myapplication.features.auth.AuthViewModel
+import com.example.myapplication.features.auth.states.AuthFormState
+import com.example.myapplication.features.auth.states.FormState
+import com.example.myapplication.features.home.HomeActivity
 import com.example.myapplication.utils.AuthValidator
 
 @Composable
@@ -54,7 +54,7 @@ fun AuthView(authViewModel: AuthViewModel, padding: PaddingValues) {
             }
 
             FormState.SUCCESS -> {
-                val intent = Intent(context, MainActivity::class.java)
+                val intent = Intent(context, HomeActivity::class.java)
                 context.startActivity(intent)
                 authViewModel.setFormState(FormState.INITIAL)
             }

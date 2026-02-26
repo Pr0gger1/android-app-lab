@@ -1,6 +1,6 @@
 package com.example.myapplication.utils
 
-import com.example.myapplication.feature.auth.states.AuthFormState
+import com.example.myapplication.features.auth.states.AuthFormState
 
 sealed class AuthValidator {
     companion object {

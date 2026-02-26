@@ -1,4 +1,4 @@
-package com.example.myapplication.feature.auth.states
+package com.example.myapplication.features.auth.states
 
 import com.example.myapplication.data.dto.UserCredentials
 
