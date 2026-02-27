@@ -11,5 +11,5 @@ object Constants {
         UserCredentialsDto("yuriy@mail.ru", "yuriy.1234")
     )
 
-    const val BASE_API_URL = "'https://fakestoreapi.com"
+    const val BASE_API_URL = "https://fakestoreapi.com"
 }
