@@ -1,19 +1,30 @@
 package com.example.myapplication.features.auth
 
+import android.content.Context
+import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.Constants
+import com.example.myapplication.data.datastore.UserDataStore
+import com.example.myapplication.data.datastore.UserPreferences
 import com.example.myapplication.data.dto.UserCredentialsDto
 import com.example.myapplication.features.auth.states.AuthFormState
 import com.example.myapplication.features.auth.states.FormState
+import com.example.myapplication.features.home.HomeActivity
 import com.example.myapplication.utils.AuthValidator
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class AuthViewModel : ViewModel() {
+@HiltViewModel
+class AuthViewModel @Inject constructor(
+    private val userDataStore: UserDataStore
+) : ViewModel() {
     private val _authFormState = MutableStateFlow(AuthFormState())
     val authFormState = _authFormState.asStateFlow()
 
@@ -54,7 +65,18 @@ class AuthViewModel : ViewModel() {
                 return@launch
             }
 
+            userDataStore.updateCreds(UserPreferences(email = user.email))
             setFormState(FormState.SUCCESS)
         }
     }
+
+    fun redirect(context: Context) {
+        val intent = Intent(context, HomeActivity::class.java)
+        context.startActivity(intent)
+    }
+
+    suspend fun isAuthorized(): Boolean = userDataStore
+        .getCreds()
+        .firstOrNull()
+        ?.email != null
 }

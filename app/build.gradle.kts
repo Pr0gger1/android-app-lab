@@ -4,6 +4,7 @@ plugins {
 
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.3.10"
 }
 
 android {
@@ -68,4 +69,17 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.converterGson)
     implementation(libs.loggingInterceptor)
+
+//    datastore
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.datastore)
+    implementation(libs.kotlinx.serialization.json)
+
+//    coil
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
+
+//    icons
+    implementation(libs.androidx.compose.material.icons.core)
+    implementation(libs.androidx.compose.material.icons.extended)
 }

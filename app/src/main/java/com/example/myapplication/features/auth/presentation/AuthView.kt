@@ -1,6 +1,5 @@
 package com.example.myapplication.features.auth.presentation
 
-import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -39,7 +38,6 @@ import com.example.myapplication.core.shared.CircleLoader
 import com.example.myapplication.features.auth.AuthViewModel
 import com.example.myapplication.features.auth.states.AuthFormState
 import com.example.myapplication.features.auth.states.FormState
-import com.example.myapplication.features.home.HomeActivity
 import com.example.myapplication.utils.AuthValidator
 
 @Composable
@@ -50,12 +48,15 @@ fun AuthView(authViewModel: AuthViewModel, padding: PaddingValues) {
     LaunchedEffect(authFormState.state) {
         when (authFormState.state) {
             FormState.ERROR -> {
-                Toast.makeText(context, "Неправильный логин или пароль", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    "Неправильный логин или пароль",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
 
             FormState.SUCCESS -> {
-                val intent = Intent(context, HomeActivity::class.java)
-                context.startActivity(intent)
+                authViewModel.redirect(context)
                 authViewModel.setFormState(FormState.INITIAL)
             }
 
