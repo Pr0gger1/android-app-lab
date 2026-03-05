@@ -35,9 +35,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
 import com.example.myapplication.core.shared.CircleLoader
+import com.example.myapplication.data.models.enums.FetchState
 import com.example.myapplication.features.auth.AuthViewModel
 import com.example.myapplication.features.auth.states.AuthFormState
-import com.example.myapplication.features.auth.states.FormState
 import com.example.myapplication.utils.AuthValidator
 
 @Composable
@@ -47,7 +47,7 @@ fun AuthView(authViewModel: AuthViewModel, padding: PaddingValues) {
 
     LaunchedEffect(authFormState.state) {
         when (authFormState.state) {
-            FormState.ERROR -> {
+            FetchState.ERROR -> {
                 Toast.makeText(
                     context,
                     "Неправильный логин или пароль",
@@ -55,9 +55,9 @@ fun AuthView(authViewModel: AuthViewModel, padding: PaddingValues) {
                 ).show()
             }
 
-            FormState.SUCCESS -> {
+            FetchState.SUCCESS -> {
                 authViewModel.redirect(context)
-                authViewModel.setFormState(FormState.INITIAL)
+                authViewModel.setFormState(FetchState.INITIAL)
             }
 
             else -> {}
@@ -88,7 +88,7 @@ fun AuthView(authViewModel: AuthViewModel, padding: PaddingValues) {
                     singleLine = true,
                     onValueChange = authViewModel::setEmail,
                     label = { Text(stringResource(id = R.string.email_label)) },
-                    isError = !authFormState.isEmailValid || authFormState.state == FormState.ERROR,
+                    isError = !authFormState.isEmailValid || authFormState.state == FetchState.ERROR,
                     supportingText = {
                         if (!authFormState.isEmailValid)
                             Text(
@@ -106,7 +106,7 @@ fun AuthView(authViewModel: AuthViewModel, padding: PaddingValues) {
                     singleLine = true,
                     onValueChange = authViewModel::setPassword,
                     label = { Text(stringResource(id = R.string.password_label)) },
-                    isError = !authFormState.isPasswordValid || authFormState.state == FormState.ERROR,
+                    isError = !authFormState.isPasswordValid || authFormState.state == FetchState.ERROR,
                     visualTransformation = PasswordVisualTransformation(),
                     placeholder = { Text(stringResource(R.string.password_placeholder)) },
                     supportingText = { ErrorPasswordFieldMessage(authFormState) }
@@ -121,7 +121,7 @@ fun AuthView(authViewModel: AuthViewModel, padding: PaddingValues) {
                     onClick = authViewModel::signIn,
                     enabled = AuthValidator.validateAuthForm(authFormState)
                 ) {
-                    if (authFormState.state == FormState.LOADING)
+                    if (authFormState.state == FetchState.LOADING)
                         CircleLoader(modifier = Modifier.size(24.dp))
                     else Text(
                         text = stringResource(id = R.string.auth_button_login_name),

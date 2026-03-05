@@ -8,8 +8,8 @@ import com.example.myapplication.Constants
 import com.example.myapplication.data.datastore.UserDataStore
 import com.example.myapplication.data.datastore.UserPreferences
 import com.example.myapplication.data.dto.UserCredentialsDto
+import com.example.myapplication.data.models.enums.FetchState
 import com.example.myapplication.features.auth.states.AuthFormState
-import com.example.myapplication.features.auth.states.FormState
 import com.example.myapplication.features.home.HomeActivity
 import com.example.myapplication.utils.AuthValidator
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -42,7 +42,7 @@ class AuthViewModel @Inject constructor(
         )
     }
 
-    fun setFormState(state: FormState) {
+    fun setFormState(state: FetchState) {
         _authFormState.update {
             it.copy(state = state)
         }
@@ -50,7 +50,7 @@ class AuthViewModel @Inject constructor(
 
     fun signIn() {
         viewModelScope.launch {
-            setFormState(FormState.LOADING)
+            setFormState(FetchState.LOADING)
             delay(2000)
 
             val typedEmail = authFormState.value.email
@@ -61,12 +61,12 @@ class AuthViewModel @Inject constructor(
             }
 
             if (user == null) {
-                setFormState(FormState.ERROR)
+                setFormState(FetchState.ERROR)
                 return@launch
             }
 
             userDataStore.updateCreds(UserPreferences(email = user.email))
-            setFormState(FormState.SUCCESS)
+            setFormState(FetchState.SUCCESS)
         }
     }
 

@@ -93,5 +93,4 @@ fun TopBar(homeViewModel: HomeViewModel, lazyGridState: LazyGridState) {
             Text("Выйти", style = TextStyle(fontSize = 16.sp))
         }
     }
-
 }

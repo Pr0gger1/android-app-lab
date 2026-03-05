@@ -12,4 +12,6 @@
     <string name="auth_button_login_name">Войти</string>
     <string name="auth_button_register_name">Зарегистрироваться</string>
     <string name="title_activity_authenticated_activity">AuthenticatedActivity</string>
+    <string name="product_error_message">Произошла ошибка</string>
+    <string name="refresh_page_label">Обновить страницу</string>
 </resources>

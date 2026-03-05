@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.myapplication.data.datastore.UserDataStore
 import com.example.myapplication.data.models.Product
+import com.example.myapplication.data.models.enums.FetchState
 import com.example.myapplication.data.repositories.ProductRepository
 import com.example.myapplication.features.auth.AuthActivity
 import com.example.myapplication.features.home.states.ProductState
@@ -25,18 +26,19 @@ class HomeViewModel @Inject constructor(
 
     suspend fun loadProducts() {
         _productState.update {
-            it.copy(isLoading = true)
+            it.copy(state = FetchState.LOADING)
         }
 
-        val response = productRepository.getAllProducts()
-
-        Log.d("HomeViewModel[loadProducts]", "Response: $response")
-
-        _productState.update {
-            it.copy(products = response, isLoading = false)
+        try {
+            val response = productRepository.getAllProducts()
+            Log.d("HomeViewModel[loadProducts]", "Response: $response")
+            _productState.update {
+                it.copy(products = getSortedProducts(response, true), state = FetchState.SUCCESS)
+            }
+        } catch (e: Exception) {
+            Log.e("HomeViewModel[loadProducts]", "${e.message}")
+            _productState.update { it.copy(state = FetchState.ERROR) }
         }
-
-        sortProducts(true)
     }
 
     suspend fun logout(context: Context) {
@@ -45,17 +47,19 @@ class HomeViewModel @Inject constructor(
         context.startActivity(intent)
     }
 
-    fun sortProducts(asc: Boolean) {
-        val (products) = productState.value
-
-        val sortedProducts: List<Product> = if (asc) {
+    private fun getSortedProducts(products: List<Product>, asc: Boolean): List<Product> {
+        return if (asc) {
             products.sortedBy { it.title }
         } else {
             products.sortedByDescending { it.title }
         }
+    }
+
+    fun sortProducts(asc: Boolean) {
+        val (products) = productState.value
 
         _productState.update {
-            it.copy(products = sortedProducts)
+            it.copy(products = getSortedProducts(products, asc))
         }
     }
 }
