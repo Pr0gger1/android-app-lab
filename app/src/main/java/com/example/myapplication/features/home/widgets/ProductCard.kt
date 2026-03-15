@@ -63,6 +63,15 @@ fun ProductCard(modifier: Modifier = Modifier, product: Product, isHorizontalOri
             )
 
             Text(
+                product.category,
+                color = Color.Black,
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
+                ),
+            )
+
+            Text(
                 "$${product.price}",
                 style = TextStyle(
                     fontSize = 16.sp,
