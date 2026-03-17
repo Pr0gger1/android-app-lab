@@ -9,7 +9,8 @@ import dagger.hilt.components.SingletonComponent
         RetrofitModule::class,
         ApiModule::class,
         RepositoryModule::class,
-        DataStoreModule::class
+        DataStoreModule::class,
+        RoomModule::class
     ]
 )
 @InstallIn(SingletonComponent::class)

@@ -4,16 +4,15 @@ import android.content.Context
 import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.myapplication.Constants
+import com.example.myapplication.data.AppDatabase
 import com.example.myapplication.data.datastore.UserDataStore
 import com.example.myapplication.data.datastore.UserPreferences
-import com.example.myapplication.data.dto.UserCredentialsDto
 import com.example.myapplication.data.models.enums.FetchState
 import com.example.myapplication.features.auth.states.AuthFormState
 import com.example.myapplication.features.home.HomeActivity
 import com.example.myapplication.utils.AuthValidator
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
@@ -23,10 +22,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val userDataStore: UserDataStore
+    private val userDataStore: UserDataStore,
+    appDatabase: AppDatabase
 ) : ViewModel() {
     private val _authFormState = MutableStateFlow(AuthFormState())
     val authFormState = _authFormState.asStateFlow()
+    val userDao = appDatabase.getUserDao()
 
     fun setEmail(value: String) = _authFormState.update {
         val isEmailValid = AuthValidator.validateEmail(value)
@@ -49,18 +50,15 @@ class AuthViewModel @Inject constructor(
     }
 
     fun signIn() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             setFormState(FetchState.LOADING)
-            delay(2000)
 
             val typedEmail = authFormState.value.email
             val typedPassword = authFormState.value.password
 
-            val user: UserCredentialsDto? = Constants.USER_CREDENTIALS.find {
-                it.email == typedEmail && it.password == typedPassword
-            }
+            val user = userDao.getByEmail(typedEmail)
 
-            if (user == null) {
+            if (user == null || user.password != typedPassword) {
                 setFormState(FetchState.ERROR)
                 return@launch
             }

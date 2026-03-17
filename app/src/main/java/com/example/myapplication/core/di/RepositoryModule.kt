@@ -1,5 +1,6 @@
 package com.example.myapplication.core.di
 
+import com.example.myapplication.data.AppDatabase
 import com.example.myapplication.data.api.ProductService
 import com.example.myapplication.data.repositories.ProductRepository
 import com.example.myapplication.data.repositories.impl.ProductRepositoryImpl
@@ -14,6 +15,6 @@ import javax.inject.Singleton
 object RepositoryModule {
     @Provides
     @Singleton
-    fun providesProductRepository(service: ProductService): ProductRepository =
-        ProductRepositoryImpl(service)
+    fun providesProductRepository(service: ProductService, db: AppDatabase): ProductRepository =
+        ProductRepositoryImpl(service, db)
 }

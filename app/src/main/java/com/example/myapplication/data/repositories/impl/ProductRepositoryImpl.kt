@@ -1,20 +1,42 @@
 package com.example.myapplication.data.repositories.impl
 
+import com.example.myapplication.data.AppDatabase
 import com.example.myapplication.data.api.ProductService
 import com.example.myapplication.data.models.Product
 import com.example.myapplication.data.repositories.ProductRepository
+import java.util.Date
 import javax.inject.Inject
 
 class ProductRepositoryImpl @Inject constructor(
-    private val productService: ProductService
+    private val productService: ProductService,
+    database: AppDatabase
 ) : ProductRepository {
+    private val productDao = database.getProductDao()
+    private val CACHE_TIME = 1000 * 60 * 1
+    private var lastUpdateTime: Date? = null
+
     override suspend fun getAllProducts(): List<Product> {
-        val response = productService.getAllProducts()
+        val cachedData = productDao.getAll()
 
-        if (response.isSuccessful) {
-            return response.body() ?: emptyList()
+        if (isCacheValid()) {
+            return cachedData
+        } else {
+            val response = productService.getAllProducts()
+
+            if (response.isSuccessful) {
+                productDao.updateAll(response.body() ?: emptyList())
+                lastUpdateTime = Date()
+
+                return response.body() ?: emptyList()
+            } else return cachedData
         }
+    }
 
-        return emptyList()
+    private fun isCacheValid(): Boolean {
+        return lastUpdateTime?.let { time ->
+            val currentTime = Date().time
+
+            return currentTime - time.time < CACHE_TIME
+        } ?: false
     }
 }
