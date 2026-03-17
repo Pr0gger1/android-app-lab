@@ -29,8 +29,11 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.myapplication.R
+import com.example.myapplication.Route
 import com.example.myapplication.core.shared.CircleLoader
+import com.example.myapplication.data.models.Product
 import com.example.myapplication.data.models.enums.FetchState
 import com.example.myapplication.features.home.HomeViewModel
 import com.example.myapplication.features.home.states.ProductState
@@ -39,7 +42,11 @@ import com.example.myapplication.features.home.widgets.TopBar
 import kotlinx.coroutines.launch
 
 @Composable
-fun HomeView(modifier: Modifier = Modifier, homeViewModel: HomeViewModel) {
+fun HomeView(
+    modifier: Modifier = Modifier,
+    homeViewModel: HomeViewModel,
+    navController: NavHostController
+) {
     val configuration = LocalConfiguration.current
     val coroutineScope = rememberCoroutineScope()
     val lazyGridState = rememberLazyGridState()
@@ -61,6 +68,10 @@ fun HomeView(modifier: Modifier = Modifier, homeViewModel: HomeViewModel) {
 
     fun onRefresh() {
         coroutineScope.launch { homeViewModel.loadProducts() }
+    }
+
+    fun onCardClick(product: Product) {
+        navController.navigate("${Route.PRODUCT}/${product.id}")
     }
 
     Box(modifier = modifier.fillMaxSize()) {
@@ -91,6 +102,7 @@ fun HomeView(modifier: Modifier = Modifier, homeViewModel: HomeViewModel) {
                     ) {
                         items(productState.products, key = { it.id }) { product ->
                             ProductCard(
+                                onClick = { onCardClick(product) },
                                 product = product,
                                 isHorizontalOrientation = isHorizontalOrientation
                             )

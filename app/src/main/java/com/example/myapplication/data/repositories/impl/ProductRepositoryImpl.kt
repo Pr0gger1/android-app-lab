@@ -32,6 +32,19 @@ class ProductRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getProduct(id: Int): Product? {
+        val response = productService.getProduct(id)
+
+        if (response.isSuccessful) {
+            productDao.update(response.body() ?: return null)
+            lastUpdateTime = Date()
+
+            return response.body()
+        }
+
+        return null
+    }
+
     private fun isCacheValid(): Boolean {
         return lastUpdateTime?.let { time ->
             val currentTime = Date().time

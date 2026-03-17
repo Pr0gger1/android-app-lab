@@ -24,9 +24,15 @@ import coil3.compose.AsyncImage
 import com.example.myapplication.data.models.Product
 
 @Composable
-fun ProductCard(modifier: Modifier = Modifier, product: Product, isHorizontalOrientation: Boolean) {
+fun ProductCard(
+    modifier: Modifier = Modifier,
+    product: Product,
+    isHorizontalOrientation: Boolean,
+    onClick: () -> Unit = {}
+) {
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        onClick = onClick,
         shape = RoundedCornerShape(12.dp),
         modifier = modifier
     ) {
