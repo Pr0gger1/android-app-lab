@@ -33,6 +33,12 @@ class ProductRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getProduct(id: Int): Product? {
+        val cachedData = productDao.findById(id)
+
+        if (cachedData != null) {
+            return cachedData
+        }
+        
         val response = productService.getProduct(id)
 
         if (response.isSuccessful) {

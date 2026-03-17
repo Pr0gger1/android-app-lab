@@ -3,14 +3,14 @@ package com.example.myapplication.utils.converters
 import androidx.room.TypeConverter
 import java.util.UUID
 
-class UUIDConverter {
+class UUIDConverter : Converter<UUID> {
     @TypeConverter
-    fun toStringUUID(id: UUID): String {
-        return id.toString()
+    override fun toString(data: UUID): String {
+        return data.toString()
     }
 
     @TypeConverter
-    fun fromStringToUUID(stringId: String): UUID {
-        return UUID.fromString(stringId)
+    override fun fromString(data: String): UUID {
+        return UUID.fromString(data)
     }
 }

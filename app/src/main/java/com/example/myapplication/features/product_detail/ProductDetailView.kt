@@ -3,19 +3,14 @@ package com.example.myapplication.features.product_detail
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -28,9 +23,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -38,6 +31,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
+import com.example.myapplication.features.product_detail.widgets.StarRatingBar
+import com.example.myapplication.utils.hooks.rememberLandscapeOrientationState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,6 +41,7 @@ fun ProductDetailView(modifier: Modifier = Modifier, navController: NavHostContr
     val state by viewModel.productState.collectAsState()
     val product = state.product
     val scrollState = rememberScrollState()
+    val isHorizontalOrientation = rememberLandscapeOrientationState()
 
     LaunchedEffect(true) {
         viewModel.loadProduct(id)
@@ -66,7 +62,7 @@ fun ProductDetailView(modifier: Modifier = Modifier, navController: NavHostContr
     }) { padding ->
         if (product == null) {
             Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("Произошла ошибка")
+                Text("Нет информации")
             }
         } else
             Box(
@@ -89,7 +85,7 @@ fun ProductDetailView(modifier: Modifier = Modifier, navController: NavHostContr
                         model = product.image, contentDescription = product.title,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(300.dp),
+                            .height(if (isHorizontalOrientation) 150.dp else 300.dp),
                         contentScale = ContentScale.Fit
                     )
 
@@ -120,40 +116,5 @@ fun ProductDetailView(modifier: Modifier = Modifier, navController: NavHostContr
                     }
                 }
             }
-    }
-}
-
-
-@Composable
-fun StarRatingBar(
-    maxStars: Int = 5,
-    rating: Float,
-) {
-    val density = LocalDensity.current.density
-    val starSize = (12f * density).dp
-    val starSpacing = (0.5f * density).dp
-
-    Row(
-        modifier = Modifier.selectableGroup(),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        for (i in 1..maxStars) {
-            val isSelected = i <= rating
-            val icon = if (isSelected) Icons.Filled.Star else Icons.Default.Star
-            val iconTintColor = if (isSelected) Color(0xFFFFC700) else Color(0x20FFFFFF)
-
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = iconTintColor,
-                modifier = Modifier
-                    .width(starSize)
-                    .height(starSize)
-            )
-
-            if (i < maxStars) {
-                Spacer(modifier = Modifier.width(starSpacing))
-            }
-        }
     }
 }

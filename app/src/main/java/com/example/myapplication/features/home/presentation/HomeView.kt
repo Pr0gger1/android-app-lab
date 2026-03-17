@@ -1,6 +1,5 @@
 package com.example.myapplication.features.home.presentation
 
-import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,7 +22,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -39,6 +37,7 @@ import com.example.myapplication.features.home.HomeViewModel
 import com.example.myapplication.features.home.states.ProductState
 import com.example.myapplication.features.home.widgets.ProductCard
 import com.example.myapplication.features.home.widgets.TopBar
+import com.example.myapplication.utils.hooks.rememberLandscapeOrientationState
 import kotlinx.coroutines.launch
 
 @Composable
@@ -47,11 +46,10 @@ fun HomeView(
     homeViewModel: HomeViewModel,
     navController: NavHostController
 ) {
-    val configuration = LocalConfiguration.current
     val coroutineScope = rememberCoroutineScope()
     val lazyGridState = rememberLazyGridState()
     val productState: ProductState by homeViewModel.productState.collectAsState()
-    val isHorizontalOrientation = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+    val isHorizontalOrientation = rememberLandscapeOrientationState()
 
     val columns by remember {
         derivedStateOf {

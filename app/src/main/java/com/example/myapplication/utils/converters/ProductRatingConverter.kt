@@ -4,17 +4,17 @@ import androidx.room.TypeConverter
 import com.example.myapplication.data.models.ProductRating
 import com.google.gson.Gson
 
-class ProductRatingConverter {
+class ProductRatingConverter : Converter<ProductRating> {
     private val gson: Gson
         get() = Gson()
 
     @TypeConverter
-    fun fromProductRatingToJson(productRating: ProductRating): String {
-        return gson.toJson(productRating)
+    override fun toString(data: ProductRating): String {
+        return gson.toJson(data)
     }
 
     @TypeConverter
-    fun fromJsonToProductRating(json: String): ProductRating {
-        return gson.fromJson(json, ProductRating::class.java)
+    override fun fromString(data: String): ProductRating {
+        return gson.fromJson(data, ProductRating::class.java)
     }
 }
