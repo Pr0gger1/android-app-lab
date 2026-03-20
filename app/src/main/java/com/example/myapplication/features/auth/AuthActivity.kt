@@ -36,10 +36,9 @@ class AuthActivity : ComponentActivity() {
         }
 
         lifecycleScope.launch {
+            redirectIfNeed()
             delay(1000)
             keepSplashScreen = false
-
-            redirectIfNeed()
         }
 
         setContent {

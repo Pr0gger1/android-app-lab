@@ -1,5 +1,8 @@
 package com.example.myapplication.features.home.presentation
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,10 +11,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Button
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -60,6 +69,10 @@ fun HomeView(
         }
     }
 
+    val isFloatingButtonVisible by remember {
+        derivedStateOf { lazyGridState.firstVisibleItemIndex > 0 }
+    }
+
     LaunchedEffect(true) {
         homeViewModel.loadProducts()
     }
@@ -68,15 +81,33 @@ fun HomeView(
         coroutineScope.launch { homeViewModel.loadProducts() }
     }
 
+    fun scrollToTop() {
+        coroutineScope.launch { lazyGridState.animateScrollToItem(0) }
+    }
+
     fun onCardClick(product: Product) {
         navController.navigate("${Route.PRODUCT}/${product.id}")
     }
 
-    Box(modifier = modifier.fillMaxSize()) {
+    Scaffold(modifier = modifier.fillMaxSize(), floatingActionButton = {
+        AnimatedVisibility(
+            visible = isFloatingButtonVisible,
+            enter = scaleIn(),
+            exit = scaleOut()
+        ) {
+            FloatingActionButton(onClick = ::scrollToTop, shape = CircleShape) {
+                Icon(Icons.Filled.KeyboardArrowUp, contentDescription = "Refresh")
+            }
+        }
+    }) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 12.dp),
+                .padding(
+                    start = 12.dp,
+                    end = 12.dp,
+                    top = padding.calculateTopPadding(),
+                ),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             TopBar(homeViewModel, lazyGridState)
@@ -98,11 +129,19 @@ fun HomeView(
                         verticalArrangement = Arrangement.spacedBy(12.dp),
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        items(productState.products, key = { it.id }) { product ->
+                        itemsIndexed(
+                            productState.products,
+                            key = { _, item -> item.id }) { index, product ->
                             ProductCard(
                                 onClick = { onCardClick(product) },
                                 product = product,
-                                isHorizontalOrientation = isHorizontalOrientation
+                                isHorizontalOrientation = isHorizontalOrientation,
+                                modifier = Modifier.padding(
+                                    bottom = if (index == productState.products.size - 1)
+                                        12.dp
+                                    else
+                                        0.dp
+                                )
                             )
                         }
                     }

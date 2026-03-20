@@ -18,7 +18,7 @@ class ProductRepositoryImpl @Inject constructor(
     override suspend fun getAllProducts(): List<Product> {
         val cachedData = productDao.getAll()
 
-        if (isCacheValid()) {
+        if (isCacheValid() && cachedData.isNotEmpty()) {
             return cachedData
         } else {
             val response = productService.getAllProducts()
@@ -38,7 +38,7 @@ class ProductRepositoryImpl @Inject constructor(
         if (cachedData != null) {
             return cachedData
         }
-        
+
         val response = productService.getProduct(id)
 
         if (response.isSuccessful) {
