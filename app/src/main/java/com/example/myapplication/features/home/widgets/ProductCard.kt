@@ -1,5 +1,6 @@
 package com.example.myapplication.features.home.widgets
 
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -28,13 +29,16 @@ fun ProductCard(
     modifier: Modifier = Modifier,
     product: Product,
     isHorizontalOrientation: Boolean,
+    onLongPress: () -> Unit = {},
     onClick: () -> Unit = {}
 ) {
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-        onClick = onClick,
         shape = RoundedCornerShape(12.dp),
-        modifier = modifier
+        modifier = modifier.combinedClickable(
+            onClick = onClick,
+            onLongClick = onLongPress
+        )
     ) {
         Column(
             modifier = Modifier

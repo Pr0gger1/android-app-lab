@@ -27,8 +27,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -44,6 +46,7 @@ import com.example.myapplication.data.models.Product
 import com.example.myapplication.data.models.enums.FetchState
 import com.example.myapplication.features.home.HomeViewModel
 import com.example.myapplication.features.home.states.ProductState
+import com.example.myapplication.features.home.widgets.ProductBottomSheet
 import com.example.myapplication.features.home.widgets.ProductCard
 import com.example.myapplication.features.home.widgets.TopBar
 import com.example.myapplication.utils.hooks.rememberLandscapeOrientationState
@@ -73,12 +76,10 @@ fun HomeView(
         derivedStateOf { lazyGridState.firstVisibleItemIndex > 0 }
     }
 
+    var activeProduct by remember { mutableStateOf<Product?>(null) }
+
     LaunchedEffect(true) {
         homeViewModel.loadProducts()
-    }
-
-    fun onRefresh() {
-        coroutineScope.launch { homeViewModel.loadProducts() }
     }
 
     fun scrollToTop() {
@@ -111,6 +112,11 @@ fun HomeView(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             TopBar(homeViewModel, lazyGridState)
+            ProductBottomSheet(
+                product = activeProduct,
+                showBottomSheet = activeProduct != null,
+                onDismiss = { activeProduct = null }
+            )
 
             when (productState.state) {
                 FetchState.LOADING -> {
@@ -134,13 +140,12 @@ fun HomeView(
                             key = { _, item -> item.id }) { index, product ->
                             ProductCard(
                                 onClick = { onCardClick(product) },
+                                onLongPress = { activeProduct = product },
                                 product = product,
                                 isHorizontalOrientation = isHorizontalOrientation,
                                 modifier = Modifier.padding(
-                                    bottom = if (index == productState.products.size - 1)
-                                        12.dp
-                                    else
-                                        0.dp
+                                    bottom = if (index == productState.products.size - 1) 12.dp
+                                    else 0.dp
                                 )
                             )
                         }
@@ -159,7 +164,7 @@ fun HomeView(
                             )
 
                             Button(
-                                onClick = ::onRefresh,
+                                onClick = { coroutineScope.launch { homeViewModel.loadProducts() } },
                                 shape = RoundedCornerShape(12.dp)
                             ) {
                                 Text(stringResource(R.string.refresh_page_label))
