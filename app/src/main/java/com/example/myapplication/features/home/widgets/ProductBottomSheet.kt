@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.data.models.Product
 
@@ -19,9 +20,14 @@ fun ProductBottomSheet(
     onDismiss: () -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState()
+    val window = LocalWindowInfo.current
 
     if (showBottomSheet) {
-        ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState) {
+        ModalBottomSheet(
+            onDismissRequest = onDismiss,
+            sheetState = sheetState,
+            sheetMaxWidth = window.containerDpSize.width
+        ) {
             Column(modifier = Modifier.padding(horizontal = 12.dp)) {
                 product?.description?.let {
                     Text(it)
